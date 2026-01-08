@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Job Posting Detector</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-search"></i> Fake Job Detective
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">Detector</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/analysis">Analysis</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <!-- Header -->
+                <div class="text-center mb-5">
+                    <h1 class="display-4 mb-3"><i class="fas fa-search text-primary"></i> Fake Job Posting Detector</h1>
+                    <p class="lead text-muted">Paste a job description below, and our AI will analyze if it's <strong>Real</strong> or <strong>Fake</strong> based on writing patterns.</p>
+                </div>
+
+                <!-- Input Form -->
+                <div class="card shadow-lg mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0"><i class="fas fa-paste"></i> Analyze Job Description</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="jobDescription" class="form-label">Job Description:</label>
+                            <textarea class="form-control" id="jobDescription" rows="10" 
+                                      placeholder="Paste the complete job description here..."></textarea>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary btn-lg" onclick="analyzeJob()" id="analyzeBtn">
+                                <i class="fas fa-search"></i> Analyze Job
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading Indicator -->
+                <div id="loading" class="text-center d-none">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Analyzing job description...</p>
+                </div>
+
+                <!-- Results Section -->
+                <div id="results" class="d-none">
+                    <!-- Prediction Result -->
+                    <div class="card shadow-lg mb-4">
+                        <div class="card-header" id="resultHeader">
+                            <h4 class="mb-0"><i class="fas fa-chart-bar"></i> Prediction Result</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="prediction-card text-center p-4 rounded">
+                                        <h3 id="predictionText" class="mb-3"></h3>
+                                        <div class="progress" style="height: 30px;">
+                                            <div id="realBar" class="progress-bar bg-success" role="progressbar"></div>
+                                            <div id="fakeBar" class="progress-bar bg-danger" role="progressbar"></div>
+                                        </div>
+                                        <div class="mt-3">
+                                            <span class="badge bg-success fs-6 p-2" id="realPercent"></span>
+                                            <span class="badge bg-danger fs-6 p-2" id="fakePercent"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <canvas id="probabilityChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Word Cloud -->
+                    <div class="card shadow-lg mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h4 class="mb-0"><i class="fas fa-cloud"></i> Keyword Visualization</h4>
+                        </div>
+                        <div class="card-body text-center">
+                            <img id="wordcloudImg" src="" alt="Word Cloud" class="img-fluid rounded">
+                        </div>
+                    </div>
+
+                    <!-- Forensic Analysis -->
+                    <div class="card shadow-lg">
+                        <div class="card-header bg-dark text-white">
+                            <h4 class="mb-0"><i class="fas fa-microscope"></i> Forensic Analysis</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Red Flags -->
+                                <div class="col-md-6">
+                                    <div class="alert alert-danger">
+                                        <h5><i class="fas fa-flag"></i> Suspicious Indicators</h5>
+                                        <p class="small text-muted">Words that suggest a fake job posting:</p>
+                                        <ul id="redFlags" class="list-group">
+                                            <!-- Red flags will be inserted here -->
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <!-- Green Flags -->
+                                <div class="col-md-6">
+                                    <div class="alert alert-success">
+                                        <h5><i class="fas fa-check-circle"></i> Professional Indicators</h5>
+                                        <p class="small text-muted">Words that suggest a genuine job posting:</p>
+                                        <ul id="greenFlags" class="list-group">
+                                            <!-- Green flags will be inserted here -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tips Section -->
+                <div class="card shadow-lg mt-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h4 class="mb-0"><i class="fas fa-lightbulb"></i> Detection Tips</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="alert alert-danger">
+                                    <h6><i class="fas fa-exclamation-triangle"></i> Red Flags (Fake Jobs):</h6>
+                                    <ul class="small">
+                                        <li>Too good to be true salary</li>
+                                        <li>No experience required for high-paying jobs</li>
+                                        <li>Vague job description</li>
+                                        <li>Poor grammar and spelling</li>
+                                        <li>Pressure to act immediately</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="alert alert-success">
+                                    <h6><i class="fas fa-check"></i> Green Flags (Real Jobs):</h6>
+                                    <ul class="small">
+                                        <li>Detailed job requirements</li>
+                                        <li>Clear company information</li>
+                                        <li>Professional language</li>
+                                        <li>Realistic salary range</li>
+                                        <li>Contact through professional channels</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container text-center">
+            <p class="mb-0">Fake Job Posting Detector &copy; 2024 | Powered by Machine Learning</p>
+            <p class="small text-muted mt-2">This tool analyzes job descriptions to detect potential fake job postings based on linguistic patterns.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

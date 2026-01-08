@@ -1,0 +1,120 @@
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    border-radius: 15px 15px 0 0 !important;
+    font-weight: 600;
+}
+
+.prediction-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+}
+
+.progress {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.badge {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+}
+
+.list-group-item {
+    border: none;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 5px;
+    border-radius: 8px !important;
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+    transform: translateX(5px);
+}
+
+.alert {
+    border: none;
+    border-radius: 10px;
+}
+
+textarea.form-control {
+    border-radius: 10px;
+    border: 2px solid #e0e0e0;
+    padding: 15px;
+    font-size: 16px;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+}
+
+textarea.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    padding: 12px 30px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+#wordcloudImg {
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+footer {
+    margin-top: auto;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-body .row {
+        flex-direction: column;
+    }
+    
+    .prediction-card {
+        margin-bottom: 20px;
+    }
+    
+    h1.display-4 {
+        font-size: 2.5rem;
+    }
+}
